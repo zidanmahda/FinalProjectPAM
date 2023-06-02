@@ -47,7 +47,6 @@ public class LoginPageActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
@@ -72,13 +71,12 @@ public class LoginPageActivity extends AppCompatActivity implements View.OnClick
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {// Sign in success, update UI with the signed - in user 's information
+                if (task.isSuccessful()) {
                 Log.d(TAG, "signInWithEmail:success");
                 FirebaseUser user = mAuth.getCurrentUser();
                 Toast.makeText(LoginPageActivity.this, user.toString(), Toast.LENGTH_SHORT).show();
                 updateUI(user);
                 } else {
-                    // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.getException());
                     Toast.makeText(LoginPageActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     updateUI(null);
