@@ -1,18 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:id="@+id/topbar"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:padding="5dp"
+       app:layout_constraintLeft_toLeftOf="parent"
+       app:layout_constraintRight_toRightOf="parent"
+       app:layout_constraintTop_toTopOf="parent">
+       <ImageView
+           android:id="@+id/logo"
+           android:layout_width="155dp"
+           android:layout_height="65dp"
+           android:src="@drawable/logoblack"
+           android:layout_marginTop="10dp"
+           app:layout_constraintTop_toTopOf="@id/topbar"
+           app:layout_constraintBottom_toBottomOf="@id/topbar"
+           app:layout_constraintRight_toLeftOf="@id/profile"
+           app:layout_constraintLeft_toRightOf="@id/add" />
+       <ImageView
+           android:id="@+id/profile"
+           android:layout_width="60dp"
+           android:layout_height="60dp"
+           android:layout_marginTop="10dp"
+           android:src="@drawable/ic_profile"
+           app:layout_constraintTop_toTopOf="@id/topbar"
+           app:layout_constraintBottom_toBottomOf="@id/topbar"
+           app:layout_constraintLeft_toRightOf="@id/logo"
+           app:layout_constraintEnd_toEndOf="@id/topbar"/>
+       <ImageView
+           android:id="@+id/add"
+           android:layout_width="60dp"
+           android:layout_height="60dp"
+           android:layout_marginTop="10dp"
+           android:src="@drawable/ic_add"
+           app:layout_constraintTop_toTopOf="@id/topbar"
+           app:layout_constraintBottom_toBottomOf="@id/topbar"
+           app:layout_constraintRight_toLeftOf="@id/logo"
+           app:layout_constraintStart_toStartOf="@id/topbar"/>
+   </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle_contact"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:nestedScrollingEnabled="false"
+        android:paddingBottom="@dimen/dimen_16_margin"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topbar"
+        app:layout_constraintVertical_bias="0.0"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_place" />
 </androidx.constraintlayout.widget.ConstraintLayout>

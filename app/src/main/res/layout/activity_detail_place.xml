@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailPlaceActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detail Tempat"
+            android:textAlignment="center"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            app:layout_constraintTop_toTopOf="@id/topbar"
+            app:layout_constraintLeft_toRightOf="@id/back"
+            app:layout_constraintEnd_toEndOf="@id/topbar"
+            android:layout_marginRight="75dp"
+            android:layout_marginTop="15dp"/>
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_back"
+            app:layout_constraintTop_toTopOf="@id/topbar"
+            app:layout_constraintBottom_toBottomOf="@id/topbar"
+            app:layout_constraintRight_toLeftOf="@id/title"
+            app:layout_constraintStart_toStartOf="@id/topbar"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dimen_16_margin"
+        android:layout_marginRight="@dimen/dimen_16_margin"
+        android:layout_marginTop="100dp">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            android:src="@drawable/pana_2"
+            app:layout_constraintTop_toTopOf="@+id/content"
+            app:layout_constraintLeft_toLeftOf="@id/content"
+            app:layout_constraintRight_toRightOf="@id/content"/>
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama Tempat"
+            android:fontFamily="@font/poppins"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="@id/image"
+            app:layout_constraintLeft_toLeftOf="@id/content"
+            app:layout_constraintBottom_toBottomOf="@id/content"/>
+
+        <TextView
+            android:id="@+id/desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deskripsi Tempat"
+            android:fontFamily="@font/poppinslight"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="@id/content"
+            app:layout_constraintTop_toBottomOf="@id/name"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_maps"
+            android:layout_width="328dp"
+            android:layout_height="62dp"
+            android:background="@drawable/bg_btn_sign"
+            android:layout_marginTop="170dp"
+            android:text="Go To Maps"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            android:textColor="#FFFF"
+            android:fontFamily="@font/poppins"
+            app:layout_constraintTop_toBottomOf="@id/desc"
+            app:layout_constraintStart_toStartOf="@id/content"
+            app:layout_constraintEnd_toEndOf="@id/content"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
