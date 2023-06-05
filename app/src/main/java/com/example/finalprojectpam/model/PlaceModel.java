@@ -1,4 +1,4 @@
-package model;
+package com.example.finalprojectpam.model;
 
 public class PlaceModel {
     private String name, description, image, maps;

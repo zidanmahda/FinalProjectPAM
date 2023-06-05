@@ -1,4 +1,4 @@
-package model.adapter;
+package com.example.finalprojectpam.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +19,7 @@ import com.example.finalprojectpam.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.PlaceModel;
+import com.example.finalprojectpam.model.PlaceModel;
 
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder> {
 
@@ -44,6 +44,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
         final PlaceModel place = placeList.get(position);
         holder.tvName.setText(place.getName());
         holder.tvDesc.setText(place.getDescription());
+
         //buat set image
 
         //buat holder untuk tiap action
