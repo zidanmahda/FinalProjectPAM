@@ -2,104 +2,106 @@ package com.example.finalprojectpam.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.finalprojectpam.DetailPlaceActivity;
+import com.bumptech.glide.Glide;
 import com.example.finalprojectpam.R;
+import com.example.finalprojectpam.UpdateDataActivity;
+import com.example.finalprojectpam.model.PlaceModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.example.finalprojectpam.model.PlaceModel;
-
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder> {
+    private List<PlaceModel> itemList;
 
-    private Context context;
-    private List<PlaceModel> placeList;
-    private static ClickListener clickListener;
-
-    public PlaceAdapter(Context context, ArrayList<PlaceModel> placeList){
-        this.context = context;
-        this.placeList = placeList;
+    public PlaceAdapter(List<PlaceModel> itemLIst) {
+        this.itemList = itemLIst;
     }
+
+    public void setItemList(List<PlaceModel> itemList) {
+        this.itemList = itemList;
+    }
+    DatabaseReference db;
+    FirebaseDatabase data;
+    FirebaseUser current;
+
 
     @NonNull
     @Override
     public PlaceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_place, parent, false);
-        return new PlaceViewHolder(view);
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View daftar = inflater.inflate(R.layout.item_place,parent,false);
+        PlaceViewHolder isi = new PlaceViewHolder(daftar);
+        return isi;
     }
 
     @Override
     public void onBindViewHolder(@NonNull PlaceViewHolder holder, int position) {
-        final PlaceModel place = placeList.get(position);
-        holder.tvName.setText(place.getName());
-        holder.tvDesc.setText(place.getDescription());
-
-        //buat set image
-
-        //buat holder untuk tiap action
-
-        holder.placeLayout.setOnClickListener(v -> {
-            String dataName = holder.tvName.getText().toString();
-            String dataDesc = holder.tvDesc.getText().toString();
-            String dataImage = place.getImage(); //need validate
-            String dataMap = place.getMaps(); //to url
-
-            //Buat page detail place
-            Intent intent = new Intent(context, DetailPlaceActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("pname", dataName);
-            bundle.putString("pdesc", dataDesc);
-            bundle.putString("pmap", dataMap);
-            intent.putExtras(bundle);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        });
+        holder._namaTempat.setText(itemList.get(position).getName());
+        holder._deskirpsiTempat.setText(itemList.get(position).getDescription());
+        Glide.with(holder.itemView.getContext())
+                .load(itemList.get(position).getImage())
+                .override(100,100)
+                .into(holder.img);
     }
 
     @Override
     public int getItemCount() {
-        return placeList.size();
+        if(itemList == null){
+            return 0;
+        }
+        return itemList.size();
     }
 
-    public class PlaceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        LinearLayout placeLayout;
-        TextView tvName, tvDesc;
-        ImageView ivImage, ivUpdate, ivDelete;
+    public class PlaceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView _namaTempat,_deskirpsiTempat;
+        ImageView _delete, _update;
+        ImageView img;
         public PlaceViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            placeLayout = itemView.findViewById(R.id.place_layout);
-            tvName = itemView.findViewById(R.id.tv_name);
-            tvDesc = itemView.findViewById(R.id.tv_desc);
-            ivImage = itemView.findViewById(R.id.imageView);
-            ivUpdate = itemView.findViewById(R.id.update);
-            ivDelete = itemView.findViewById(R.id.delete);
-
-            ivDelete.setOnClickListener(this);
-            ivUpdate.setOnClickListener(this);
+            data = FirebaseDatabase.getInstance();
+            _namaTempat = itemView.findViewById(R.id.nama_tempat);
+            _deskirpsiTempat = itemView.findViewById(R.id.deskripsi_tempat);
+            _delete = itemView.findViewById(R.id.delete);
+            _delete.setOnClickListener(this);
+            _update= itemView.findViewById(R.id.update);
+            _update.setOnClickListener(this);
+            current = FirebaseAuth.getInstance().getCurrentUser();
+            db = data.getReference().child(PlaceModel.class.getSimpleName()).child(current.getUid());
+            img = itemView.findViewById(R.id.img);
         }
 
         @Override
         public void onClick(View view) {
-            clickListener.onItemClick(getAdapterPosition(), itemView);
+            if(_delete.getId()==view.getId()){
+                int a = getAdapterPosition();
+                db.child(itemList.get(a).getKey()).removeValue();
+//        db.push().setValue(new Note(itemList.get(a).getKey(),itemList.get(a).getIsi()));
+                itemList.remove(a);
+                notifyItemRemoved(a);
+                notifyItemRangeChanged(a,itemList.size());
+                notifyDataSetChanged();
+            } else if(_update.getId()==view.getId()){
+                int a = getAdapterPosition();
+                Intent upd = new Intent(view.getContext(), UpdateDataActivity.class);
+                upd.putExtra("key",itemList.get(a).getKey());
+                upd.putExtra("nama",itemList.get(a).getName());
+                upd.putExtra("deskripsi",itemList.get(a).getDescription());
+                upd.putExtra("link", itemList.get(a).getMaps());
+                view.getContext().startActivity(upd);
+            }
         }
-    }
-
-    public void setOnItemClickListener(PlaceAdapter.ClickListener clickListener) {
-        PlaceAdapter.clickListener = clickListener;
-    }
-    public interface ClickListener {
-        void onItemClick(int position, View v);
     }
 }
