@@ -1,23 +1,21 @@
 package com.example.finalprojectpam.model;
 
 public class PlaceModel {
-    private String name, description, image, maps, key;
+    private String name, description, image, key;
 
     public PlaceModel(){
 
     }
 
-    public PlaceModel(String name, String description, String image, String maps) {
+    public PlaceModel(String name, String description) {
         this.name = name;
         this.description = description;
-        this.image = image;
-        this.maps = maps;
     }
 
-    public PlaceModel(String name, String description, String maps) {
+    public PlaceModel(String image, String name, String description) {
+        this.image = image;
         this.name = name;
         this.description = description;
-        this.maps = maps;
     }
 
     public String getName() {
@@ -42,14 +40,6 @@ public class PlaceModel {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public String getMaps() {
-        return maps;
-    }
-
-    public void setMaps(String maps) {
-        this.maps = maps;
     }
 
     public String getKey() {

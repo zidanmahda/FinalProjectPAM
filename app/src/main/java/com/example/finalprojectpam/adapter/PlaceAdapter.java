@@ -25,6 +25,7 @@ import java.util.List;
 public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHolder> {
     private List<PlaceModel> itemList;
 
+
     public PlaceAdapter(List<PlaceModel> itemLIst) {
         this.itemList = itemLIst;
     }
@@ -99,7 +100,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceViewHol
                 upd.putExtra("key",itemList.get(a).getKey());
                 upd.putExtra("nama",itemList.get(a).getName());
                 upd.putExtra("deskripsi",itemList.get(a).getDescription());
-                upd.putExtra("link", itemList.get(a).getMaps());
                 view.getContext().startActivity(upd);
             }
         }

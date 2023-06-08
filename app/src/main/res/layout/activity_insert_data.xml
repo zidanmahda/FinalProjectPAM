@@ -88,21 +88,6 @@
             app:layout_constraintStart_toStartOf="@id/content"
             app:layout_constraintTop_toBottomOf="@+id/nama_tempat" />
 
-        <EditText
-            android:id="@+id/link_maps"
-            android:layout_width="350dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="85dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="85dp"
-            android:ems="10"
-            android:hint="Link Google Maps"
-            android:fontFamily="@font/poppinslight"
-            android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="@id/content"
-            app:layout_constraintStart_toStartOf="@id/content"
-            app:layout_constraintTop_toBottomOf="@+id/deskripsi_tempat" />
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_upload"
             android:layout_width="328dp"
@@ -114,7 +99,7 @@
             android:textSize="20sp"
             android:textColor="#FFFF"
             android:fontFamily="@font/poppins"
-            app:layout_constraintTop_toBottomOf="@id/link_maps"
+            app:layout_constraintTop_toBottomOf="@id/deskripsi_tempat"
             app:layout_constraintStart_toStartOf="@id/content"
             app:layout_constraintEnd_toEndOf="@id/content"/>
 

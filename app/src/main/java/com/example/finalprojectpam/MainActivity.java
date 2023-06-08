@@ -2,6 +2,7 @@ package com.example.finalprojectpam;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -23,62 +24,56 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
-    private FirebaseAuth mAuth;
-    private FirebaseDatabase data;
-    private DatabaseReference db;
-    List<PlaceModel> itemList;
-    PlaceAdapter adapter;
-    private ImageView btnLogout, btnAdd;
-    FirebaseUser currentUser;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    FirebaseAuth mFier;
+    FirebaseDatabase data;
+    DatabaseReference db;
+    List<PlaceModel> itemList ;
+    PlaceAdapter adapt;
+    ImageView insert, logout;
+    FirebaseUser currentU;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mAuth = FirebaseAuth.getInstance();
+        mFier = FirebaseAuth.getInstance();
         data = FirebaseDatabase.getInstance();
         db = data.getReference(PlaceModel.class.getSimpleName());
-
-        btnLogout = findViewById(R.id.logout);
-        btnAdd = findViewById(R.id.add);
-
+        logout = findViewById(R.id.logout);
+        insert = findViewById(R.id.add);
         RecyclerView re = findViewById(R.id.recycle);
-
-        btnAdd.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, InsertDataActivity.class);
-            startActivity(intent);
-        });
-
-        btnLogout.setOnClickListener(view -> {
-            logOut();
-        });
-
         load();
         re.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PlaceAdapter(isi);
-        re.setAdapter(adapter);
+        adapt = new PlaceAdapter(isi);
+        re.setAdapter(adapt);
+
+        logout.setOnClickListener(this);
+        insert.setOnClickListener(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        currentUser = mAuth.getCurrentUser();
+        currentU = mFier.getCurrentUser();
     }
 
-    public void logOut(){
-        mAuth.signOut();
-        Intent intent = new Intent(MainActivity.this, LoginPageActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+    @Override
+    public void onClick(View view) {
+        if(view.getId()==logout.getId()){
+            mFier.signOut();
+            Intent lo = new Intent(MainActivity.this, LoginPageActivity.class);
+            lo.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(lo);
+        }else if (view.getId()== insert.getId()){
+            Intent lo = new Intent(MainActivity.this, InsertDataActivity.class);
+            startActivity(lo);
+        }
     }
-
     List<PlaceModel> isi = new ArrayList<>();
-
     public void load(){
-        currentUser = mAuth.getCurrentUser();
-        String uid = currentUser.getUid();
+        currentU = mFier.getCurrentUser();
+        String uid = currentU.getUid();
         String path = PlaceModel.class.getSimpleName()+"/"+uid;
         if(data.getReference(path)==null){
             data.getReference().child(uid).setValue("");
@@ -93,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
                     place.setKey(snap.getKey());
                     isi.add(place);
                 }
-                adapter.notifyDataSetChanged();
+                adapt.setItemList(isi);
+                adapt.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -101,6 +97,5 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT ).show();
             }
         });
-
     }
 }

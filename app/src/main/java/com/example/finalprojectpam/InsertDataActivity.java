@@ -34,124 +34,120 @@ import java.io.File;
 
 public class InsertDataActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText etNamaTempat, etDeskripsiTempat, etLinkMaps;
-    private ImageView btnBack;
-    private Button btnChoose;
-    private AppCompatButton btnUpload;
-    private FirebaseAuth auth;
-    private FirebaseUser current;
-    private FirebaseDatabase db;
-    private DatabaseReference bd;
-    private PlaceModel place;
-    private StorageReference store;
-    private ActivityResultLauncher<Intent> filePickerLauncher;
-    private Uri fileUri;
-    String link;
-
+    EditText name, desc;
+    Button choose;
+    ImageView back;
+    AppCompatButton upload;
+    FirebaseAuth auth;
+    FirebaseUser current;
+    FirebaseDatabase db;
+    DatabaseReference bd;
+    PlaceModel place;
+    StorageReference store;
+    ActivityResultLauncher<Intent> filePickerLauncher;
+    Uri fileUri;
+    String Link;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_data);
-
-        etNamaTempat = findViewById(R.id.nama_tempat);
-        etDeskripsiTempat = findViewById(R.id.deskripsi_tempat);
-        etLinkMaps = findViewById(R.id.link_maps);
-        btnBack = findViewById(R.id.back);
-        btnChoose = findViewById(R.id.btn_choose);
-        btnUpload = findViewById(R.id.btn_upload);
-        auth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
         bd = db.getReference(PlaceModel.class.getSimpleName());
+        auth = FirebaseAuth.getInstance();
+        name = findViewById(R.id.nama_tempat);
+        desc = findViewById(R.id.deskripsi_tempat);
+        back = findViewById(R.id.back);
+        upload = findViewById(R.id.btn_upload);
+        choose = findViewById(R.id.btn_choose);
+        upload.setOnClickListener(this);
+        back.setOnClickListener(this);
+        choose.setOnClickListener(this);
         current = auth.getCurrentUser();
         store = FirebaseStorage.getInstance().getReference();
 
-        btnChoose.setOnClickListener(this);
-        btnUpload.setOnClickListener(this);
-
-        filePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    Intent data = result.getData();
-                    fileUri = data.getData();
-                    if (fileUri != null) {
-                        uploadFile(fileUri);
-                    } else {
-                        Log.e("plus", "Failed to retrieve file URI");
+        filePickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            Intent data = result.getData();
+                            fileUri = data.getData();
+                            if (fileUri != null) {
+                                uploadFile(fileUri);
+                            } else {
+                                Log.e("insert", "Failed to retrieve file URI");
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
+
     }
 
     @Override
     public void onClick(View view) {
-        if(btnBack.getId() == view.getId()){
+        if(back.getId()==view.getId()){
             Intent intent = new Intent(InsertDataActivity.this, MainActivity.class);
             startActivity(intent);
-        } else if (btnUpload.getId()==view.getId()){
+            finish();
+        }else if (upload.getId()==view.getId()){
             if(fileUri == null){
-                Toast.makeText(this, "Upload Image First!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Upload photo first", Toast.LENGTH_SHORT).show();
                 return;
             }
-            String namaTempat = etNamaTempat.getText().toString().trim();
-            String deskripsiTempat = etDeskripsiTempat.getText().toString().trim();
-            String linkMaps = etLinkMaps.getText().toString().trim();
-            add(namaTempat, deskripsiTempat, linkMaps);
+            String nama = name.getText().toString().trim();
+            String deskripsi = desc.getText().toString().trim();
+            add(nama,deskripsi);
+
             finish();
-        } else if(btnChoose.getId() == view.getId()){
+        }else if(choose.getId()==view.getId()){
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("*/*");
             filePickerLauncher.launch(intent);
         }
     }
-
-    public boolean validateForm(){
+    public boolean cekform(){
         boolean result = true;
-        if (TextUtils.isEmpty(etNamaTempat.getText().toString())) {
-            etNamaTempat.setError("Required");
+        if (TextUtils.isEmpty(name.getText().toString())) {
+            name.setError("Required");
             result = false;
         } else {
-            etNamaTempat.setError(null);
+            name.setError(null);
         }
-        if (TextUtils.isEmpty(etDeskripsiTempat.getText().toString())) {
-            etDeskripsiTempat.setError("Required");
+        if (TextUtils.isEmpty(desc.getText().toString())) {
+            desc.setError("Required");
             result = false;
         } else {
-            etDeskripsiTempat.setError(null);
-        }
-        if (TextUtils.isEmpty(etLinkMaps.getText().toString())) {
-            etLinkMaps.setError("Required");
-            result = false;
-        } else {
-            etLinkMaps.setError(null);
+            desc.setError(null);
         }
         return result;
     }
-
     String key;
 
-    private void add(String namaTempat , String deskripsiTempat, String link){
+    private void add(String nama , String desc){
         current = auth.getCurrentUser();
-        DatabaseReference dr =  bd.child(current.getUid()).push();
+        DatabaseReference dr = bd.child(current.getUid()).push();
         key = dr.getKey();
-        place = new PlaceModel(namaTempat, deskripsiTempat, link);
-        if(!validateForm()) {
+        place = new PlaceModel(Link,nama,desc);
+        if(!cekform()) {
             return;
         }
         dr.setValue(place).addOnSuccessListener(this, new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Toast.makeText(InsertDataActivity.this, "Data added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InsertDataActivity.this, "Data added",
+                        Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(InsertDataActivity.this, "Fail to add", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InsertDataActivity.this, "Fail to add",
+                                Toast.LENGTH_SHORT).show();
                     }
-        }
+                }
         );
+
     }
+
     private void uploadFile(Uri fileUri) {
         File file = new File(fileUri.getPath());
         StorageReference fileRef = store.child("img/" +current.getUid()+"/"+ file.getName());
@@ -166,7 +162,7 @@ public class InsertDataActivity extends AppCompatActivity implements View.OnClic
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        link = uri.toString();
+                        Link = uri.toString();
                         // Use the imageUrl as needed
                     }
                 });
